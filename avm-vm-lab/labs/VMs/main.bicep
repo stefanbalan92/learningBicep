@@ -1,12 +1,27 @@
 
 targetScope = 'resourceGroup'
 
-param vmName string = 'cheapvm'
+@description('VM size')
+param vmSize string = 'Standard_D2s_v3'
+
+@description('Availability zone: -1 = regional, or 1/2/3')
+@allowed([-1, 1, 2, 3])
+param availabilityZone int = 3
+
+@description('Name for the VM.')
+param vmName string = 'labvm01'   // <---- Declare vmName here
+
+@description('Admin username for Linux.')
 param adminUsername string = 'azureuser'
+
+@description('SSH public key (PUBLIC key).')
 @secure()
 param sshPublicKey string
+
+@description('Subnet resource ID where the NIC will attach.')
 param subnetResourceId string
 
+// Ubuntu 22.04 LTS
 var imageReference = {
   publisher: 'Canonical'
   offer: '0001-com-ubuntu-server-jammy'
@@ -14,15 +29,12 @@ var imageReference = {
   version: 'latest'
 }
 
+// Required osDisk shape for this module version
 var osDisk = {
-  
-name: '${vmName}-osdisk'
+  name: '${vmName}-osdisk'
   diskSizeGB: 30
   caching: 'ReadWrite'
-  managedDisk: {             // <- REQUIRED by the module's type definition
-    storageAccountType: 'Standard_LRS'
-  }
-
+  managedDisk: { storageAccountType: 'Standard_LRS' }
 }
 
 var nicConfigurations = [
@@ -37,13 +49,13 @@ var nicConfigurations = [
   }
 ]
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
-  name: 'avm-cheapvm'
+module labvm 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
+  name: 'avm-labvm01'
   params: {
     name: vmName
     osType: 'Linux'
-    vmSize: 'Standard_B1s' // Cheapest size
-    availabilityZone: -1
+    vmSize: vmSize
+    availabilityZone: availabilityZone
     nicConfigurations: nicConfigurations
     osDisk: osDisk
     imageReference: imageReference
