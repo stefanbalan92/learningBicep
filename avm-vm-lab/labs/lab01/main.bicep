@@ -5,7 +5,7 @@ metadata description = 'This instance deploys the module using Customer-Managed-
 
 @maxLength(7)
 @description('Optional. Unique identifier for the deployment. Will appear in resource names. Must be 7 characters or less.')
-param identifier string = 'isblab01'
+param identifier string = 'isblab1'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
