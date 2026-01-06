@@ -124,6 +124,7 @@ module labvm 'br/public:avm/res/compute/virtual-machine:0.21.0' = {
     publicKeys: [
       { path: '/home/${adminUsername}/.ssh/authorized_keys', keyData: sshPublicKey }
     ]
+    disablePasswordAuthentication: true   // <-- add this line
     // Optional: identity / diagnostics can be added later
   }
   dependsOn: [
